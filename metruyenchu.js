@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name            MeTruyenChu downloader
 // @name:vi         MeTruyenChu downloader
-// @namespace    	http://tampermonkey.net/
-// @version      	1
+// @version      1.1
 // @icon            https://static.cdnno.com/background/metruyenchu.jpg
 // @description     Tải truyện từ MeTruyenChu định dạng EPUB.
 // @description:vi  Tải truyện từ MeTruyenChu định dạng EPUB.
-// @author          FixBug
-// @oujs:author     FixBug
+// @author       You
 // @match           https://metruyenchu.com/truyen/*
 // @match           https://metruyenchu.com/truyen/*
+// @match           https://nuhiep.com/truyen/*
+// @match           https://nuhiep.com/truyen/*
 // @require         https://code.jquery.com/jquery-3.5.1.min.js
 // @require         https://unpkg.com/jszip@3.1.5/dist/jszip.min.js
 // @require         https://unpkg.com/file-saver@2.0.2/dist/FileSaver.min.js
@@ -18,7 +18,6 @@
 // @require         https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js?v=a834d46
 // @noframes
 // @connect         self
-// @supportURL      https://github.com/gianghd/userscript
 // @run-at          document-idle
 // @grant           GM_xmlhttpRequest
 // @grant           GM.xmlHttpRequest
@@ -77,9 +76,10 @@
         credits =
         '<p>Truyện được tải từ <a href="' +
         referrer +
-        '">metruyenchu</a></p><p>Userscript được viết bởi: FixBug</p>',
+        '">metruyenchu</a></p><p>Userscript được viết bởi: <a href="https://lelinhtinh.github.io/jEpub/">Zzbaivong</a>, Được sửa bởi FixBug</p>',
         jepub;
 
+    $("#js-read__content").removeClass("post-body");
     if (!$novelId.length) return;
 
     var $infoBlock = $('.media-body');
@@ -101,7 +101,8 @@
         });
     }
     jepub = new jEpub();
-    jepub.init({
+    jepub
+        .init({
         title: ebookTitle,
         author: ebookAuthor,
         publisher: host,
@@ -111,6 +112,7 @@
         .uuid(referrer);
 	$li.append($download);
     $li.insertAfter('#suggest-book');
+
     $download.one('click contextmenu', function (e) {
         e.preventDefault();
 
@@ -118,22 +120,22 @@
         document.title = '[...] Vui lòng chờ trong giây lát';
 		$download.html('Chờ một chút...');
 		$navTabChap = $('#nav-tab-chap');
-		
-		if (e.type === 'contextmenu') {
-          $download.off('click');
-          var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
-          startFrom = chapList.indexOf(startFrom);
-          if (startFrom !== -1) chapList = chapList.slice(startFrom);
-        } else {
-          $download.off('contextmenu');
-        }
-		
 		chapListSize = Number($navTabChap.find('span:last').text().trim());
 		if (chapListSize > 0) {
 			var i;
 			for (i = 1; i <= chapListSize; i++) {
 				chapList.push('chuong-'+i);
 			}
+
+            if (e.type === 'contextmenu') {
+                $download.off('click');
+                var startFrom = prompt('Nhập ID chương truyện bắt đầu tải:', chapList[0]);
+                startFrom = chapList.indexOf(startFrom);
+                if (startFrom !== -1) chapList = chapList.slice(startFrom);
+            } else {
+                $download.off('contextmenu');
+            }
+            chapListSize = chapList.length;
 			$win.on('beforeunload', function () {
 				return 'Truyện đang được tải xuống...';
 			});
@@ -217,9 +219,10 @@
                 getContent();
             }
         }).fail(function (err) {
-            chapTitle = null;
-            downloadError('Kết nối không ổn định', err);
-            saveEbook();
+            setTimeout(function() {
+                window.open(pathname + chapId + '/');
+                getContent();
+            }, 10000);
         });
     }
 
