@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name            MeTruyenChu downloader
 // @name:vi         MeTruyenChu downloader
-// @version      1.1
+// @version      1.1.1
 // @icon            https://static.cdnno.com/background/metruyenchu.jpg
 // @description     Tải truyện từ MeTruyenChu định dạng EPUB.
 // @description:vi  Tải truyện từ MeTruyenChu định dạng EPUB.
-// @author       You
+// @author       gianghd
 // @match           https://metruyenchu.com/truyen/*
 // @match           https://metruyenchu.com/truyen/*
 // @match           https://nuhiep.com/truyen/*
@@ -29,11 +29,11 @@
    */
     var errorAlert = true;
     /**
-   * Những đoạn ghi chú cuối chương của converter
-   * Chỉ cần ghi phần bắt đầu, không phân biệt hoa thường
+   * Xóa những đoạn ghi chú và quảng cáo ở cuối chương
+   * Không cần ghi hết mà chỉ cần đoạn đầu, không phân biệt hoa thường, script sẽ xóa tất cả nội dung từ cụm muốn xóa trở về sau
    * Ngăn cách các đoạn bằng dấu |
    */
-    var converter = 'ps:|hoan nghênh quảng đại bạn đọc quang lâm|Huyền ảo khoái trí ân cừu';
+    var converter = 'Nếu muốn lọc những cụm ghi chú hoặc quảng cáo ở cuối chương truyện thì hãy ghi nó ở đây, lưu ý là những cụm bạn ghi vào đây có thể sẽ gây mất nội dung nếu nó xuất hiện ở đầu hoặc giữa chương truyện.';
 
     converter = new RegExp('(' + converter + ')', 'i');
 
