@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            MeTruyenChu downloader
 // @name:vi         MeTruyenChu downloader
-// @version      1.1.1
+// @version      1.1.2
 // @icon            https://static.cdnno.com/background/metruyenchu.jpg
 // @description     Tải truyện từ MeTruyenChu định dạng EPUB.
 // @description:vi  Tải truyện từ MeTruyenChu định dạng EPUB.
@@ -219,10 +219,18 @@
                 getContent();
             }
         }).fail(function (err) {
-            setTimeout(function() {
-                window.open(pathname + chapId + '/');
+            if(err && err.status == 404){
+                log(`${pathname}${chapId}/ không tồn tại!, chuyển tới chương tiếp theo`, 2);
+                count++;
+                //lấy tiếp nội dung chương tiếp theo
                 getContent();
-            }, 10000);
+            }
+            else {
+                setTimeout(function() {
+                    window.open(pathname + chapId + '/');
+                    getContent();
+                }, 10000);
+            }
         });
     }
 
@@ -308,6 +316,19 @@
         if (errorAlert) errorAlert = confirm('Lỗi! ' + mess + '\nBạn có muốn tiếp tục nhận cảnh báo?');
 
         return '<p class="no-indent"><a href="' + referrer + chapId + '">' + mess + '</a></p>';
+    }
+    function log(message, type=1){
+        var style='color:gray', prefix='INF';
+        //1 - info, 2 - warm, 3 - error
+        if(type == 2){
+            style='color:orange';
+            prefix='WAR';
+        }
+        else if(type==3){
+            style='color:red';
+            prefix='ERR';
+        }
+        console.log(`%c[MTTDownloader][${prefix}]${message}`, style);
     }
 
 })(jQuery, window, document);
