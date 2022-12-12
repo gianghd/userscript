@@ -161,7 +161,7 @@
         }).done(function (response) {
             var $data = $(response),
                 $chapter = $data.find('#js-read__content'),
-                $notContent = $chapter.find('iframe, script, style, a, div, p:has(a[href*="truyencv.com"])'),
+                $notContent = $chapter.find('iframe, script, style, a, p:has(a[href*="truyencv.com"])'),
                 $referrer = $chapter.find('[style]').filter(function () {
                     return this.style.fontSize === '1px' || this.style.fontSize === '0px' || this.style.color === 'white';
                 }),
